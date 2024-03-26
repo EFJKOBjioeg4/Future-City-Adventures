@@ -1,0 +1,73 @@
+import random
+
+class Player:
+    def __init__(self, name):
+        self.name = name
+        self.level = 1
+        self.health = 100
+        self.skills = {
+            'attack': 10,
+            'defense': 5
+        }
+
+    def attack(self, enemy):
+        damage = self.skills['attack'] - enemy.skills['defense']
+        enemy.health -= damage
+        print(f"{self.name}对{enemy.name}造成了{damage}点伤害！")
+
+    def check_health(self):
+        if self.health <= 0:
+            print(f"{self.name}已经被击败！游戏结束。")
+            return False
+        return True
+
+class Enemy:
+    def __init__(self, name, level):
+        self.name = name
+        self.level = level
+        self.health = level * 50
+        self.skills = {
+            'attack': level * 5,
+            'defense': level * 3
+        }
+
+    def attack(self, player):
+        damage = self.skills['attack'] - player.skills['defense']
+        player.health -= damage
+        print(f"{self.name}对{player.name}造成了{damage}点伤害！")
+
+    def check_health(self):
+        if self.health <= 0:
+            print(f"{self.name}已经被击败！")
+            return False
+        return True
+
+def main():
+    player_name = input("请输入你的角色名字：")
+    player = Player(player_name)
+    enemies = [Enemy("小怪物", 1), Enemy("恶棍", 2), Enemy("魔王", 5)]
+
+    while True:
+        enemy = random.choice(enemies)
+        print(f"\n你遇到了一个级别为{enemy.level}的{enemy.name}！")
+        
+        while player.check_health() and enemy.check_health():
+            action = input("\n请选择你的行动（1.攻击 2.逃跑）：")
+            if action == '1':
+                player.attack(enemy)
+                if not enemy.check_health():
+                    break
+                enemy.attack(player)
+                if not player.check_health():
+                    break
+            elif action == '2':
+                print("你逃跑了！")
+                break
+            else:
+                print("请输入正确的选项！")
+
+        if not player.check_health():
+            break
+
+if __name__ == "__main__":
+    main()
